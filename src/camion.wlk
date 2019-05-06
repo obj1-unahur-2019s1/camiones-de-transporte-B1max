@@ -1,7 +1,7 @@
 import cosas.*
 
 object camion {
-	const property cosas = []
+	const property cosas = [contenedorPortuario]
 	const property tara =1000
 	method cargar(unaCosa) {
 		cosas.add(unaCosa)
@@ -22,8 +22,20 @@ object camion {
 	method  cosaMasPesada() {cosas.max({c=>c.peso()})}
 	method  totalBultos(){
 		var bultos = 0
-		if (cosas.any(knightRider) and cosas.any(arenaAGranel)and cosas.any(residuosRadioactivos)){bultos+=1}
-		if (cosas.any(bumblebee)and cosas.any(embalajeDeSeguridad)){bultos+=2}
+		var bulto1 = #{knightRider,arenaAGranel,residuosRadioactivos}
+		var bulto2 = #{bumblebee,embalajeDeSeguridad}
+		if (cosas.asSet().difference(cosas.asSet().difference(bulto1))==bulto1){bultos += 1}
+		if (cosas.asSet().difference(cosas.asSet().difference(bulto2))==bulto2){bultos += 2}
+		if (cosas.contains(paqueteDeLadrillos)){
+			if(paqueteDeLadrillos.cantidad()<=100){bultos += 1}
+			if(paqueteDeLadrillos.cantidad()>100 and paqueteDeLadrillos.cantidad()<=300){bultos += 2}
+			if(paqueteDeLadrillos.cantidad()>301){bultos += 3}
+		}
+		if (cosas.contains(bateriaAntiaerea)){
+			if (bateriaAntiaerea.misiles()){bultos+=2}else{bultos+=1}
+		}
+		if (cosas.contains(contenedorPortuario)){bultos+= 1 + contenedorPortuario.cosas().size()}
 		return bultos
 	}
+	method pesos(){return cosas.map({c=>c.peso()})}
 }
